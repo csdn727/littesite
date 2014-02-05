@@ -1,0 +1,33 @@
+<html>
+<head></head>
+<body>
+<a href="/index_t">返回上级页面</a>
+{% include "head.html"%}
+<span><p>选课人数：{{classes|length}}</p></span>
+<table id="result_list" align='center'  class="{%cycle row1 row2%}"> 
+<thead>
+<tr>
+<th scope="col" >
+   
+   <div class="text"><span>课程名</span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col" >
+   
+   <div class="text"><span>学生名 </span></div>
+   <div class="clear"></div>
+</th>
+</tr>
+</thead>
+<tbody>
+{% for obj in classes%}
+<tr class="row1">
+<th>{{obj.className}} <br/> </th>
+<th>{{obj.userName}} </th>
+</tr>
+{%endfor%}
+</tbody>
+</table>
+
+</body>
+</html>

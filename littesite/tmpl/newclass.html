@@ -1,0 +1,17 @@
+<html>
+<head></head>
+<body>
+<a href="/index_t">返回上级页面</a>
+{% include "head.html"%}
+<b>新建选课</b>
+<p>{{tip}}</p><br/>
+<form style="display:block;background:none"  method="POST" action="/newClass"> 
+{% csrf_token %}
+课程名：<input type="text" name="classname"/><br/>
+课程介绍：<input type="text" name="classdesc"/><br/>
+课程学生人数上限：<input type="text" name="classmax"/><br/>
+授课老师：<input type="text" name="classt"/><br/>
+<input type="submit" value="确认提交"/>&nbsp &nbsp &nbsp
+</form>
+</body>
+</html>

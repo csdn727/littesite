@@ -1,0 +1,53 @@
+<html>
+<head></head>
+<body>
+<a href="/index_t">返回上级页面</a>
+{% include "head.html"%}
+<span><p>课程数：{{classes|length}}</p></span>
+<table id="result_list" align='center'  class="{%cycle row1 row2%}"> 
+<thead>
+<tr>
+<th scope="col" >
+   
+   <div class="text"><span>课程名</span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col" >
+   
+   <div class="text"><span>介绍</span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col" >
+   
+   <div class="text"><span>授课老师</span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col" >
+   
+   <div class="text"><span>学生上限</span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col" >
+   
+   <div class="text"><span> </span></div>
+   <div class="clear"></div>
+</th>
+</tr>
+</thead>
+<tbody>
+{% for obj in classes%}
+<tr class="row1">
+<th>{{obj.className}} <br/> </th>
+<th>{{obj.classDesc}} </th>
+<th>{{obj.classT}}</th>
+<th>{{obj.classMax}}</th>
+<th>
+<a href="/classReg?classId={{obj.classId}}">查看选课学生名单</a> 
+</th>
+</tr>
+{%endfor%}
+</tbody>
+</table>
+
+</body>
+</html>

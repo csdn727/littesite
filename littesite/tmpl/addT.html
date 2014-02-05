@@ -1,0 +1,15 @@
+<html>
+<head></head>
+<body>
+{% include "head.html"%}
+
+<b>添加教师账号</b>
+<p>{{tip}}
+<form style="display:block;background:none"  method="POST" action="/addT"> 
+{% csrf_token %}
+用户名：<input type="text" name="userName"/><br/>
+密码：<input type="password" name="userPsd"/><br/>
+<input type="submit" value="注册"/>&nbsp &nbsp &nbsp
+</form>
+</body>
+</html>

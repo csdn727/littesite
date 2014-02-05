@@ -1,0 +1,13 @@
+<html>
+<head></head>
+<body>
+<b>学生账号注册</b>
+<form style="display:block;background:none"  method="POST" action="/sreg"> 
+{% csrf_token %}
+用户名：<input type="text" name="userName"/><br/>
+密码：<input type="password" name="userPsd"/><br/>
+<input type="submit" value="注册"/>&nbsp &nbsp &nbsp
+</form>
+<br/><a href="/">点我返回</a>
+</body>
+</html>

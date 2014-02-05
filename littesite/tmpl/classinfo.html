@@ -1,0 +1,79 @@
+<html coding="utf-8">
+<head>
+<script src="/media/jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+fresh = false;
+$(document).ready(function(){
+  $(".ajax").click(function(){
+     $url = $(this).attr("addr");
+     htmlobj=$.ajax({url:$url,async:'false',dataType:'html',timeout:3000,
+                   success:function (data, textStatus) {
+                   alert(textStatus);
+                   }});
+     alert("请求已发出，请等待回应");
+     fresh = true;
+  });
+});
+setInterval(function() {
+
+            if (fresh) location.reload();
+            fresh = false;
+
+    },
+        5000);
+</script>
+</head>
+<body>
+{% include "head.html"%}
+<span><p>课程数：{{classes|length}}</p></span>
+<table id="result_list" align='center'  class="{%cycle row1 row2%}"> 
+<thead>
+<tr>
+<th scope="col" >
+   
+   <div class="text"><span>课程名</span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col" >
+   
+   <div class="text"><span>介绍</span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col" >
+   
+   <div class="text"><span>授课老师</span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col" >
+   
+   <div class="text"><span>学生上限</span></div>
+   <div class="clear"></div>
+</th>
+<th scope="col" >
+   
+   <div class="text"><span> </span></div>
+   <div class="clear"></div>
+</th>
+</tr>
+</thead>
+<tbody>
+{% for obj in classes%}
+<tr class="row1">
+<th>{{obj.className}} <br/> </th>
+<th>{{obj.classDesc}} </th>
+<th>{{obj.classT}}</th>
+<th>{{obj.classMax}}</th>
+<th>
+{% if obj.is_picked == 1 %}
+<a class='ajax' addr='http://127.0.0.1:8442/?comm=2&userid={{user.userId}}&classid={{obj.classId}}' href="javascript:void(0);">退选</a>
+{% else %}
+<a class='ajax' addr='http://127.0.0.1:8442/?comm=1&userid={{user.userId}}&classid={{obj.classId}}' href="javascript:void(0);">申请</a>
+{% endif %} 
+</th>
+</tr>
+{%endfor%}
+</tbody>
+</table>
+
+</body>
+</html>
