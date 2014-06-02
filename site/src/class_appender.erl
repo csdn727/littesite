@@ -6,7 +6,8 @@
 -behaviour(gen_server).
 -include_lib("record.hrl").
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
-
+-define(HEADER, [{"Content-Type","text/html,json; charset=utf-8"}]).
+-define(SUCCESS, "success").
 %% ====================================================================
 %% API functions
 %% ====================================================================
@@ -20,7 +21,7 @@
 -record(state, {classname,pickclass,dropclass,limit}).
 
 start_link({Cid,Cname,Cmax})->
-    gen_server:start_link({local,erlang:list_to_atom("class_ap_"++Cid)}, ?MODULE, [{Cid,Cname,Cmax}], []).
+    gen_server:start_link({local,erlang:list_to_atom("class_ap_"++Cid)}, ?MODULE, [Cid,Cname,Cmax], []).
 %% init/1
 %% ====================================================================
 %% @doc <a href="http://www.erlang.org/doc/man/gen_server.html#Module:init-1">gen_server:init/1</a>
@@ -33,7 +34,7 @@ start_link({Cid,Cname,Cmax})->
 	State :: term(),
 	Timeout :: non_neg_integer() | infinity.
 %% ====================================================================
-init([{Cid,Cname,Cmax}]) ->
+init([Cid,Cname,Cmax]) ->
     Cid2 = list_to_binary(Cid),
     mysql:connect(db, "localhost", undefined, "root", "0792", "littersite",utf8, true),
     mysql:prepare(erlang:list_to_atom("pick_class_"++Cid),
@@ -90,7 +91,7 @@ handle_call(Request, From, State) ->
 %% ====================================================================
 handle_cast({UserId,pickclass,Req}, State) ->
     try
-        Headers = [{"Allow", "GET,PUT,DELETE"}],
+        Headers = ?HEADER,
         io:format("m l f:~p~n", [{?MODULE,?LINE,handle_cast}]),
         case ets:lookup(ets_user, UserId) of
             [User] when is_record(User, user) ->
@@ -99,35 +100,37 @@ handle_cast({UserId,pickclass,Req}, State) ->
                        Out = mysql:execute(db, State#state.pickclass, [list_to_binary(User#user.userid), User#user.userName,State#state.classname]),
                        io:format("out:~p~n", [{?MODULE,?LINE,Out}]),
                        State2 = State#state{limit= Li-1},
-                       Req:respond({200, Headers, "success"}),
+                       Req:respond({200, Headers, ?SUCCESS}),
                        {noreply, State2};
                    true ->
                        Req:respond({200, Headers, "class is full, please choice others"}),
                        {noreply, State}
                 end;
             _ ->
-                Req:respond({200, Headers, "user not find"}),
+                Req:respond({200, Headers, "user not login"}),
                 {noreply, State}
         end
     catch
         X:Y->
-            io:format("~pwhy:~pReason~p|~n~p~n",[{?MODULE,?LINE},X,Y,erlang:get_stacktrace()])
+            io:format("~pwhy:~pReason~p|~n~p~n",[{?MODULE,?LINE},X,Y,erlang:get_stacktrace()]),
+            {noreply, State}
     end;
 handle_cast({UserId,dropclass,Req}, State) ->
     try
-        Headers = [{"Allow", "GET,PUT,DELETE"}],
+        Headers = ?HEADER,
         io:format("m l f:~p~n", [{?MODULE,?LINE,handle_cast}]),
         case ets:lookup(ets_user, UserId) of
             [User] when is_record(User, user) ->
                 Out = mysql:execute(db, State#state.dropclass, [list_to_binary(User#user.userid)]),
                 io:format("out:~p~n", [{?MODULE,?LINE,Out}]),
-                Req:respond({200, Headers, "success"});
+                Req:respond({200, Headers, ?SUCCESS});
             _ ->
-                Req:respond({200, Headers, "user not find"})
+                Req:respond({200, Headers, "user not login"})
         end
     catch
         X:Y->
-            io:format("~pwhy:~pReason~p|~n~p~n",[{?MODULE,?LINE},X,Y,erlang:get_stacktrace()])
+            io:format("~pwhy:~pReason~p|~n~p~n",[{?MODULE,?LINE},X,Y,erlang:get_stacktrace()]),
+            {noreply, State}
     end,
     {noreply, State};
 handle_cast(Msg, State) ->

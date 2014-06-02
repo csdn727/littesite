@@ -1,15 +1,17 @@
 <html>
-<head></head>
+<head>
+<link href="/media/card.css" rel="stylesheet" type="text/css"  /></head>
 <body>
 {% include "head.html"%}
-
+<div class="card signin-card">
 <b>添加教师账号</b>
 <p>{{tip}}
 <form style="display:block;background:none"  method="POST" action="/addT"> 
 {% csrf_token %}
 用户名：<input type="text" name="userName"/><br/>
 密码：<input type="password" name="userPsd"/><br/>
-<input type="submit" value="注册"/>&nbsp &nbsp &nbsp
+<input type="submit"  class="rc-button rc-button-submit" value="注册"/>&nbsp &nbsp &nbsp
 </form>
+</div>
 </body>
 </html>

@@ -8,6 +8,13 @@
         
         <div id="user-tools">
             欢迎回来：
+            {% if user.userType == 3 %}
+            [教务管理员]:
+            {% elif user.userType == 2 %}
+            [教师]:
+            {% elif user.userType == 1 %}
+            [学生]:
+            {% endif %}
             <strong>{{user.userName}}</strong>.
                 
                 <a href="/logout">退出</a>

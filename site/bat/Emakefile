@@ -1,0 +1,8 @@
+{
+	[
+	'../src/*',
+	'../src/mysql/*',
+	'../src/mochiweb/*'
+	],
+	[{i,"../include"},{outdir,"../ebin"}, debug_info, bin_opt_info]
+}.

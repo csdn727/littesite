@@ -121,20 +121,20 @@ code_change(OldVsn, State, Extra) ->
 
 dispatch(Req) ->
     Args = Req:parse_qs(),
-    io:format("Args :~p~n", [Args]),
+    io:format("Args :~p~n, Req:get(peer) ~p ", [Args,Req:get(peer)]),
     UserId = element(2,lists:keyfind("userid",1,Args)),
-    Headers = [{"Allow", "GET,PUT,DELETE"}],
+    Headers = [{"Allow", "GET,PUT,DELETE"},{"Content-Type","text/html; charset=utf-8"}],
     case lists:keyfind("comm", 1, Args) of
         {"comm",Comm} ->
             case Comm of
-                "0" ->
+                "0" -> %% login
                     "127.0.0.1" = Req:get(peer), % 检查IP
                     ets:insert(ets_user,#user{userid=UserId,
                                               userName=element(2,lists:keyfind("username",1,Args)),
                                               userIp=element(2,lists:keyfind("userip",1,Args)),
                                               time=util:seconds()}),
                     Req:respond({200, Headers, "ok\r\n"});
-                Comm2 ->
+                Comm2 when Comm2 =:= "1" orelse Comm2 =:= "2" ->
                     case ets:lookup(ets_user, UserId) of
                         [User] when is_record(User, user) ->
                             io:format("Req Ip ~p Record Ip ~p ~n",[Req:get(peer), User#user.userIp]),
@@ -146,10 +146,25 @@ dispatch(Req) ->
                                             end,
                                     site_mgr:dispatch({element(2,lists:keyfind("classid",1,Args)),UserId,Comm3,Req});
                                 _ ->
-                                    Req:respond({200, Headers, "please login again\r\n"})
+                                    Req:respond({200, Headers, {"reply","please login again\r\n"}})
                             end;
                         _ ->
                             Req:respond({200, Headers, "no login\r\n"})
+                    end;
+                "3" -> %% logout
+                    ets:delete_object(ets_user, UserId);
+                "4" -> %% heartbeat
+                    case ets:lookup(ets_user, UserId) of
+                        [] ->
+                            pass;
+                        UserR ->
+                            #user{userIp=UserIp} = UserR,
+                            case Req:get(peer) of
+                                UserIp -> % check ip
+                                    ets:update_element(ets_user, UserId, {#user.userIp, util:second()});
+                                _ ->
+                                    pass
+                            end
                     end
             end;
         _ ->

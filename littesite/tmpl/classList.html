@@ -1,5 +1,8 @@
 <html>
-<head></head>
+<head>
+<script src="/media/jquery.js" type="text/javascript"></script>
+<link href="/media/tablecloth.css" rel="stylesheet" type="text/css" media="screen" />
+</head>
 <body>
 <a href="/index_t">返回上级页面</a>
 {% include "head.html"%}
@@ -37,13 +40,13 @@
 <tbody>
 {% for obj in classes%}
 <tr class="row1">
-<th>{{obj.className}} <br/> </th>
-<th>{{obj.classDesc}} </th>
-<th>{{obj.classT}}</th>
-<th>{{obj.classMax}}</th>
-<th>
+<td>{{obj.className}} <br/> </td>
+<td>{{obj.classDesc}} </td>
+<td>{{obj.classT}}</td>
+<td>{{obj.classMax}}</td>
+<td>
 <a href="/classReg?classId={{obj.classId}}">查看选课学生名单</a> 
-</th>
+</td>
 </tr>
 {%endfor%}
 </tbody>

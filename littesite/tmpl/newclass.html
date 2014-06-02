@@ -1,17 +1,24 @@
-<html>
-<head></head>
+<html coding="utf-8">
+<head>
+<link href="/media/card.css" rel="stylesheet" type="text/css"/>
+</head>
 <body>
 <a href="/index_t">返回上级页面</a>
 {% include "head.html"%}
+<div class="card signin-card">
 <b>新建选课</b>
 <p>{{tip}}</p><br/>
 <form style="display:block;background:none"  method="POST" action="/newClass"> 
 {% csrf_token %}
-课程名：<input type="text" name="classname"/><br/>
-课程介绍：<input type="text" name="classdesc"/><br/>
-课程学生人数上限：<input type="text" name="classmax"/><br/>
-授课老师：<input type="text" name="classt"/><br/>
-<input type="submit" value="确认提交"/>&nbsp &nbsp &nbsp
+<p>课程名：</p><input type="text" placeholder="请填写课程名" name="classname"/>
+<p>课程介绍：</p><input type="text" placeholder="请填写课程介绍" name="classdesc"/>
+<p>课程学生人数上限：</p><input type="text" placeholder="请填写课程人数限制" name="classmax"/>
+<p>学分</p><input type="text" placeholder="请填写课程学分" name="classPoint"/>
+<p>开课时间</p><input type="text" placeholder="日期格式：YYYY-MM-DD" name="classStart" id="classStart"/>
+<p>课时</p><input type="text" placeholder="请填写课程课时" name="classTimes"/>
+<p>授课老师：</p><input type="text" placeholder="请填写授课教师" name="classt"/>
+<input type="submit"  class="rc-button rc-button-submit"  value="确认提交"/>&nbsp &nbsp &nbsp
 </form>
+</div>
 </body>
 </html>
